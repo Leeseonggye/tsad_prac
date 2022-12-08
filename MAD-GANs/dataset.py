@@ -27,8 +27,12 @@ class BuildDataset(Dataset):
     """
     def __init__(self, data, window_size, slide_size, time_phase=True, test=False):
         self.data = torch.FloatTensor(data)
+        
+        # 1칸씩 slide를 옮겨가면서 모든 data에 대한 test를 진행 
         if test:
             self.start_point = range(0, (len(self.data)-window_size)+1, slide_size)
+        
+        # trn, dev는 slide만큼 이동
         else:
             self.start_point = range(0, len(self.data), slide_size)
         self.window_size = window_size

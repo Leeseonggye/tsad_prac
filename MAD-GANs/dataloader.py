@@ -1,5 +1,6 @@
 import os
 import pickle
+import pandas as pd
 import torch
 import numpy as np
 from dataset import BuildDataset
@@ -25,21 +26,34 @@ def get_dataloader(
             output shape - time series: (batch size, window size, 31)
                            i.i.d: (batch size, 31)
     '''
-    with open(os.path.join(data_root, data_name), 'rb') as f:
-        df = pickle.load(f)
 
-    if time_phase:
-        # time phase condition
-        print("time series condition")
-        trn = df[df['time_phase'] == 'trn'].iloc[:,:-3].values
-        dev = df[df['time_phase'] == 'val'].iloc[:,:-3].values
-        tst = df.iloc[:,:-3].values
-    else:
-        # i.i.d. condition
-        print("i.i.d. condition")
-        trn = df[df['iid_phase'] == 'trn'].iloc[:,:-3].values
-        dev = df[df['iid_phase'] == 'val'].iloc[:,:-3].values
-        tst = df.iloc[:,:-3].values
+    
+    df_raw = pd.read_csv(os.path.join(data_root, 'train.csv'))
+    test_raw = pd.read_csv(os.path.join(data_root, 'test.csv'))
+    
+    df_raw = df_raw.fillna(method='ffill')
+    
+    trn_size = int(0.8*len(df_raw))
+    
+    # timestamp drop
+    
+    trn = df_raw.iloc[:trn_size, 1:].values
+    dev = df_raw.iloc[trn_size:, 1:].values
+    tst = test_raw.iloc[:, 1:].values
+
+    # if time_phase:
+    #     # time phase condition
+    #     print("time series condition")
+    #     trn = df[df['time_phase'] == 'trn'].iloc[:,:-3].values
+    #     dev = df[df['time_phase'] == 'val'].iloc[:,:-3].values
+    #     tst = df.iloc[:,:-3].values
+        
+    # else:
+    #     # i.i.d. condition
+    #     print("i.i.d. condition")
+    #     trn = df[df['iid_phase'] == 'trn'].iloc[:,:-3].values
+    #     dev = df[df['iid_phase'] == 'val'].iloc[:,:-3].values
+    #     tst = df.iloc[:,:-3].values
 
     if scale=='minmax':
         scaler = MinMaxScaler()

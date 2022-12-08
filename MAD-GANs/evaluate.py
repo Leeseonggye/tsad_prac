@@ -68,8 +68,8 @@ class ModelTest:
                         name='TEST')
 
         # save DR score
-        raw_data = pkl.load(open(os.path.join(datadir,dataname), 'rb'))
-        score_df = pd.DataFrame({'date':raw_data.index, 'anomaly_score':dr_loss_arr})
+        raw_data = pd.read_csv(os.path.join(datadir,"test.csv"))
+        score_df = pd.DataFrame({'timestamp_(min)':raw_data['timestamp_(min)'], 'anomaly_score':dr_loss_arr})
         score_df.to_csv(os.path.join(self.savedir,f'dr_score_lambda{lam}.csv'), index=False)
     
     def ds_score(self, inputs, lam, iterations):

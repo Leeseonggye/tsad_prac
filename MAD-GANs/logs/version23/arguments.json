@@ -1,0 +1,21 @@
+{
+    "train": false,
+    "test": true,
+    "resume": 23,
+    "datadir": "/root/PSM",
+    "logdir": "/root/GAN-based-Anomaly-Detection/MAD-GANs/logs",
+    "dataname": "PSM",
+    "nb_features": 25,
+    "window_size": 96,
+    "slide_size": 30,
+    "scale": null,
+    "epochs": 10,
+    "batch_size": 32,
+    "gen_lr": 0.1,
+    "dis_lr": 0.1,
+    "gen_loss": "mse",
+    "seed": 223,
+    "gpu": 0,
+    "lam": 0.5,
+    "optim_iter": 50
+}

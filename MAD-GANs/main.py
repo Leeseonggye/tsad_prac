@@ -15,22 +15,22 @@ import pickle
 def config_args(parser):
     parser.add_argument('--train', action='store_true', help='training model')
     parser.add_argument('--test', action='store_true', help='anomaly scoring')
-    parser.add_argument('--resume', type=int, default=None, help='version number to re-train or test model')
+    parser.add_argument('--resume', type=int, default=23, help='version number to re-train or test model')
     
     # directory
-    parser.add_argument('--datadir', type=str, default='../data', help='data directory')
-    parser.add_argument('--logdir',type=str, default='./logs', help='logs directory')
+    parser.add_argument('--datadir', type=str, default='/root/PSM', help='data directory')
+    parser.add_argument('--logdir',type=str, default='/root/GAN-based-Anomaly-Detection/MAD-GANs/logs', help='logs directory')
 
     # data
-    parser.add_argument('--dataname', type=str, default='sample_data.p', help='dataset name')
-    parser.add_argument('--nb_features', type=int, default=31, help='the number of features')
-    parser.add_argument('--window_size', type=int, default=60, help='window size for data loader')
+    parser.add_argument('--dataname', type=str, default='PSM', help='dataset name')
+    parser.add_argument('--nb_features', type=int, default=25, help='the number of features')
+    parser.add_argument('--window_size', type=int, default=96, help='window size for data loader')
     parser.add_argument('--slide_size', type=float, default=30, help='overlap ratio for data loader')
     parser.add_argument('--scale', type=str, default=None, choices=['minmax', 'minmax_m1p1', 'minmax_square'], help='select scaler')
     
     # train options
-    parser.add_argument('--epochs', type=int, default=100, help='number of epochs')
-    parser.add_argument('--batch_size', type=int, default=128, help='number of batch')
+    parser.add_argument('--epochs', type=int, default=10, help='number of epochs')
+    parser.add_argument('--batch_size', type=int, default=32, help='number of batch')
     parser.add_argument('--gen_lr', type=float, default=0.1, help='learning rate of generator')
     parser.add_argument('--dis_lr', type=float, default=0.1, help='learning rate of discriminator')
 
@@ -58,7 +58,8 @@ if __name__ == '__main__':
     # gpu
     GPU_NUM = args.gpu # select gpu number
     device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
-    torch.cuda.set_device(device) # change allocation of current GPU
+    torch.cuda.set_device(device) # change allocation of current GPU'
+    # device = 'cpu'
     print ('Current cuda device ', torch.cuda.current_device()) # check
 
     # savedir
@@ -86,7 +87,7 @@ if __name__ == '__main__':
     start_epoch = 0
     best_metrics = None
     if args.resume != None:
-        print(f'resume version{args.resume}')
+        # print(f'resume version{args.resume}')
         G_weights, D_weights, start_epoch, args.gen_lr, args.dis_lr, best_metrics = load_model(resume=args.resume, logdir=args.logdir)
         G.load_state_dict(G_weights)
         D.load_state_dict(D_weights)
